@@ -1,0 +1,91 @@
+# Copyright © Ecommet Solutions. All rights reserved.
+# See LICENSE.txt for license details.
+
+type Query {
+    productQuestions(
+        sku: String! @doc(description: "Product SKU.")
+        pageSize: Int = 10 @doc(description: "Questions per page, at most 50.")
+        currentPage: Int = 1 @doc(description: "Page number, starting at 1.")
+        search: String @doc(description: "Full-text search in questions and answers.")
+    ): ProductQuestions
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\ProductQuestions")
+        @cache(cacheIdentity: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\Identity\\ProductQuestions")
+        @doc(description: "Answered, public questions of a product in the current store view.")
+}
+
+interface ProductInterface {
+    questions(
+        pageSize: Int = 10 @doc(description: "Questions per page, at most 50.")
+        currentPage: Int = 1 @doc(description: "Page number, starting at 1.")
+    ): ProductQuestions
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\ProductQuestions")
+        @cache(cacheIdentity: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\Identity\\ProductQuestions")
+        @doc(description: "Answered, public questions of the product.")
+}
+
+type ProductQuestions @doc(description: "A page of answered product questions.") {
+    items: [ProductQuestion]! @doc(description: "Questions on this page.")
+    total_count: Int! @doc(description: "Number of matching questions on all pages.")
+    page_info: SearchResultPageInfo @doc(description: "Paging information.")
+}
+
+type ProductQuestion @doc(description: "An answered question as shown on the storefront.") {
+    id: Int! @doc(description: "Question ID.")
+    question: String! @doc(description: "Question text.")
+    answer: String! @doc(description: "Answer text.")
+    author_name: String! @doc(description: "Asker's display name, formatted by the store setting.")
+    answered_by: String! @doc(description: "Who answered, usually the store name.")
+    created_at: String! @doc(description: "When the question was asked.")
+    answered_at: String @doc(description: "When the question was answered.")
+    helpful_yes: Int! @doc(description: "Number of helpful votes.")
+    helpful_no: Int! @doc(description: "Number of not helpful votes.")
+}
+
+type Customer {
+    product_questions: [CustomerProductQuestion]!
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\CustomerQuestions")
+        @doc(description: "Product questions the customer asked, newest first.")
+}
+
+type CustomerProductQuestion @doc(description: "A question the customer asked.") {
+    id: Int! @doc(description: "Question ID.")
+    product_sku: String! @doc(description: "SKU of the product when the question was asked.")
+    question: String! @doc(description: "Question text.")
+    answer: String @doc(description: "Answer text, when answered.")
+    status: ProductQuestionStatus! @doc(description: "Answer status.")
+    created_at: String! @doc(description: "When the question was asked.")
+    answered_at: String @doc(description: "When the question was answered.")
+}
+
+enum ProductQuestionStatus @doc(description: "Status of a customer's question.") {
+    PENDING @doc(description: "Waiting for an answer.")
+    ANSWERED @doc(description: "Answered.")
+}
+
+type Mutation {
+    askProductQuestion(input: AskProductQuestionInput!): AskProductQuestionOutput
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\AskQuestion")
+        @doc(description: "Ask a question about a product. Requires a customer token.")
+    voteProductQuestion(input: VoteProductQuestionInput!): ProductQuestion
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\Vote")
+        @doc(description: "Vote on whether an answer was helpful. Guests pass a random guest_token they keep.")
+    deleteCustomerProductQuestion(id: Int! @doc(description: "Question ID.")): Boolean
+        @resolver(class: "Ecommet\\ProductQuestionsGraphQl\\Model\\Resolver\\DeleteCustomerQuestion")
+        @doc(description: "Delete one of the customer's own questions. Requires a customer token.")
+}
+
+input AskProductQuestionInput @doc(description: "A new question.") {
+    sku: String! @doc(description: "Product SKU.")
+    question: String! @doc(description: "Question text.")
+    phone: String @doc(description: "Phone number, when the customer wants a call back.")
+}
+
+type AskProductQuestionOutput @doc(description: "The saved question.") {
+    question: CustomerProductQuestion! @doc(description: "The question, pending an answer.")
+}
+
+input VoteProductQuestionInput @doc(description: "A vote on an answer.") {
+    question_id: Int! @doc(description: "Question ID.")
+    helpful: Boolean! @doc(description: "True for helpful, false for not helpful.")
+    guest_token: String @doc(description: "Random 16-128 character token identifying a guest voter. Ignored for customers.")
+}

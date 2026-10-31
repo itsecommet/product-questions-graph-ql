@@ -1,0 +1,24 @@
+Ecommet Free Use License
+
+Copyright © 2025 Ecommet Solutions. All Rights Reserved.
+This software is licensed, not sold. By installing or using this module, you agree to the terms of this license.
+
+You MAY:
+- Use this module free of charge on any Magento installation.
+- Access updates and documentation provided by Ecommet Solutions.
+- Use the module for personal or commercial websites without modification.
+
+You MAY NOT:
+- Modify, reverse engineer, or decompile this module or any of its parts.
+- Redistribute, resell, sublicense, or include this module in any collection or package.
+- Claim ownership or remove the Ecommet copyright notices.
+- Use this module in a way that violates applicable laws or Ecommet Solutions’ branding guidelines.
+
+Notes:
+- Ecommet Solutions retains full ownership and intellectual property rights.
+- No warranty or guarantee is provided; use at your own risk.
+- Support and updates are provided at Ecommet Solutions’ discretion.
+
+For complete license terms, visit: https://ecommet.in/license
+
+Contact: ecommet.solutions@gmail.com

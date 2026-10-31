@@ -1,0 +1,33 @@
+{
+    "name": "ecommet/module-product-questions-graph-ql",
+    "description": "GraphQL API for Ecommet Product Questions: answered questions on products, customer questions, asking, votes.",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": [
+        "proprietary"
+    ],
+    "authors": [
+        {
+            "name": "Ecommet Solutions",
+            "email": "ecommet.solutions@gmail.com",
+            "homepage": "https://ecommet.in",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~8.2.0||~8.3.0||~8.4.0||~8.5.0",
+        "ecommet/module-product-questions": "^2.0",
+        "magento/framework": "^103.0.7",
+        "magento/module-catalog-graph-ql": "^100.4.7",
+        "magento/module-customer-graph-ql": "^100.4.7",
+        "magento/module-graph-ql": "^100.4.7"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Ecommet\\ProductQuestionsGraphQl\\": ""
+        }
+    }
+}
